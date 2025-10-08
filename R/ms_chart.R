@@ -57,10 +57,19 @@ assert_line <- function(data_y) {
 #' @examples
 #' library(officer)
 #' @example examples/02_linechart.R
-ms_linechart <- function(data, x, y, group = NULL, labels = NULL, asis = FALSE) {
+ms_linechart <- function(
+    data,
+    x,
+    y,
+    group = NULL,
+    labels = NULL,
+    asis = FALSE,
+    error_y_lower = NULL,
+    error_y_upper = NULL) {
   out <- ms_chart(
     data = data, x = x, y = y, group = group, labels = labels,
-    type = "lineplot", asis = asis
+    type = "lineplot", asis = asis,
+    error_y_lower = error_y_lower, error_y_upper = error_y_upper
   )
   out$options <- linechart_options()
   class(out) <- c("ms_linechart", "ms_chart")
@@ -176,7 +185,8 @@ ms_scatterchart <- function(data, x, y, group = NULL, labels = NULL, asis = FALS
 #' @importFrom grDevices colors
 ms_chart <- function(data, x, y, group = NULL, labels = NULL,
                      excel_data_setup = shape_as_series,
-                     type = NULL, asis = FALSE) {
+                     type = NULL, asis = FALSE,
+                     error_y_lower = NULL, error_y_upper = NULL) {
   stopifnot(is.data.frame(data))
   stopifnot(x %in% names(data))
   stopifnot(y %in% names(data))
@@ -199,6 +209,14 @@ ms_chart <- function(data, x, y, group = NULL, labels = NULL,
     if (!(all(labs))) {
       stop("column(s) ", paste(shQuote(labs), collapse = ", "), " could not be found in data.", call. = FALSE)
     }
+  }
+
+  if (!is.null(error_y_lower) && !(error_y_lower %in% names(data))) {
+    stop("column ", shQuote(error_y_lower), " could not be found in data.", call. = FALSE)
+  }
+
+  if (!is.null(error_y_upper) && !(error_y_upper %in% names(data))) {
+    stop("column ", shQuote(error_y_upper), " could not be found in data.", call. = FALSE)
   }
 
   theme_ <- mschart_theme()
@@ -251,11 +269,21 @@ ms_chart <- function(data, x, y, group = NULL, labels = NULL,
   x <- x[1]
   y <- y[1]
 
+  error_bars <- list(y = NULL)
+  if (!is.null(error_y_lower)) {
+    error_bars$y$lower <- error_y_lower
+    data$`Lower error bar` <- data[[y]] - data[[error_y_lower]]
+  }
+  if (!is.null(error_y_upper)) {
+    error_bars$y$upper <- error_y_upper
+    data$`Upper error bar` <- data[[error_y_upper]] - data[[y]]
+  }
 
   lbls <- list(title = NULL, x = x, y = y)
 
   out <- list(
     data = data, x = x, y = y, group = group, label_cols = labels,
+    error_bars = error_bars,
     theme = theme_,
     options = list(),
     x_axis = x_axis_,
