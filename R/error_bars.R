@@ -41,10 +41,18 @@ to_pml.ms_error_bars <- function(x, axis = c("x", "y")) {
     return("")
   }
 
+  err_bar_type <- if (!is.null(x$ref_lower) && !is.null(x$ref_upper)) {
+    "both"
+  } else if (!is.null(x$ref_lower)) {
+    "minus"
+  } else {
+    "plus"
+  }
+
   paste0(
     "<c:errBars>",
     sprintf('<c:errDir val="%s"/>', axis),
-    '<c:errBarType val="both"/>',
+    sprintf('<c:errBarType val="%s"/>', err_bar_type),
     '<c:errValType val="cust"/>',
     '<c:noEndCap val="0"/>',
     if (!is.null(x$ref_lower)) paste0("<c:minus>", to_pml(x$ref_lower), "</c:minus>"),
