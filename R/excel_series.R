@@ -99,17 +99,12 @@ transpose_series_bysplit <- function(x) {
 #' @importFrom stats as.formula
 #' @importFrom data.table as.data.table dcast.data.table setorderv setnames
 shape_as_series <- function(x) {
-  y <- x$y
-  if (!is.null(x$error_bars$y$lower)) {
-    y <- c(y, x$error_bars$y$lower, "Lower error bar")
-  }
-  if (!is.null(x$error_bars$y$upper)) {
-    y <- c(y, x$error_bars$y$upper, "Upper error bar")
-  }
+  error_bar_colnames <- .error_bar_colnames(x)
+  y <- c(x$y, error_bar_colnames)
 
   if (!is.null(x$group)) {
     out <- dcast_data(data = x$data, x = x$x, y = y, group = x$group)
-    if (!is.null(x$error_bars$y)) {
+    if (length(error_bar_colnames) > 0) { # the serie column names got prefixed with Y column name, so we remove the prefix
       groups <- get_series_names(x)
       setnames(out, old = paste(x$y, groups, sep = "_"), new = groups)
     }

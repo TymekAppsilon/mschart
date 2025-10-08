@@ -78,15 +78,17 @@ as_series <- function(x, x_class, y_class, sheetname = "sheet1") {
     }
 
     error_bars <- list(y = .create_empty_error_bars())
-    if (!is.null(x$error_bars$y$lower)) {
-      y_lower_colname <- "Lower error bar"
+
+    if (!is.null(x$error_bar_colnames$y$lower)) {
+      y_lower_colname <- .error_bar_colname(x$error_bar_colnames$y$lower, "y", "lower")
       if (has_groups) y_lower_colname <- paste(y_lower_colname, y_colname, sep = "_")
 
       y_lower_range <- col_to_values_region(dataset, sheetname, y_lower_colname)
       error_bars$y$ref_lower <- num_ref(values = dataset[[y_lower_colname]], region = y_lower_range)
     }
-    if (!is.null(x$error_bars$y$upper)) {
-      y_upper_colname <- "Upper error bar"
+
+    if (!is.null(x$error_bar_colnames$y$upper)) {
+      y_upper_colname <- .error_bar_colname(x$error_bar_colnames$y$upper, "y", "upper")
       if (has_groups) y_upper_colname <- paste(y_upper_colname, y_colname, sep = "_")
 
       y_upper_range <- col_to_values_region(dataset, sheetname, y_upper_colname)

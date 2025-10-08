@@ -269,21 +269,21 @@ ms_chart <- function(data, x, y, group = NULL, labels = NULL,
   x <- x[1]
   y <- y[1]
 
-  error_bars <- list(y = NULL)
+  error_bar_colnames <- list(y = NULL)
   if (!is.null(error_y_lower)) {
-    error_bars$y$lower <- error_y_lower
-    data$`Lower error bar` <- data[[y]] - data[[error_y_lower]]
+    error_bar_colnames$y$lower <- error_y_lower
+    data[[.error_bar_colname(error_y_lower, "y", "lower")]] <- data[[y]] - data[[error_y_lower]]
   }
   if (!is.null(error_y_upper)) {
-    error_bars$y$upper <- error_y_upper
-    data$`Upper error bar` <- data[[error_y_upper]] - data[[y]]
+    error_bar_colnames$y$upper <- error_y_upper
+    data[[.error_bar_colname(error_y_upper, "y", "upper")]] <- data[[error_y_upper]] - data[[y]]
   }
 
   lbls <- list(title = NULL, x = x, y = y)
 
   out <- list(
     data = data, x = x, y = y, group = group, label_cols = labels,
-    error_bars = error_bars,
+    error_bar_colnames = error_bar_colnames,
     theme = theme_,
     options = list(),
     x_axis = x_axis_,
