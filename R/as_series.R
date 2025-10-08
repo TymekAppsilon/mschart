@@ -52,6 +52,8 @@ as_series <- function(x, x_class, y_class, sheetname = "sheet1") {
   w_y_values <- which(names(dataset) %in% series_nams)
   w_l_values <- which(names(dataset) %in% label_columns)
 
+  has_groups <- !is.null(x$group)
+
   for (w_y_index in seq_along(w_y_values)) {
     w_y <- w_y_values[w_y_index]
     w_l <- w_l_values[w_y_index]
@@ -78,14 +80,14 @@ as_series <- function(x, x_class, y_class, sheetname = "sheet1") {
     error_bars <- list(y = .create_empty_error_bars())
     if (!is.null(x$error_bars$y$lower)) {
       y_lower_colname <- "Lower error bar"
-      if (y_colname != x$y) y_lower_colname <- paste(y_lower_colname, y_colname, sep = "_")
+      if (has_groups) y_lower_colname <- paste(y_lower_colname, y_colname, sep = "_")
 
       y_lower_range <- col_to_values_region(dataset, sheetname, y_lower_colname)
       error_bars$y$ref_lower <- num_ref(values = dataset[[y_lower_colname]], region = y_lower_range)
     }
     if (!is.null(x$error_bars$y$upper)) {
       y_upper_colname <- "Upper error bar"
-      if (y_colname != x$y) y_upper_colname <- paste(y_upper_colname, y_colname, sep = "_")
+      if (has_groups) y_upper_colname <- paste(y_upper_colname, y_colname, sep = "_")
 
       y_upper_range <- col_to_values_region(dataset, sheetname, y_upper_colname)
       error_bars$y$ref_upper <- num_ref(values = dataset[[y_upper_colname]], region = y_upper_range)
