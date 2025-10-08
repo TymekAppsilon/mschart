@@ -75,20 +75,20 @@ as_series <- function(x, x_class, y_class, sheetname = "sheet1") {
       label_serie <- label_ref(values = dataset[[l_colname]], region = label_serie_range)
     }
 
-    error_bars <- list(y = NULL)
+    error_bars <- list(y = .create_empty_error_bars())
     if (!is.null(x$error_bars$y$lower)) {
       y_lower_colname <- "Lower error bar"
       if (y_colname != x$y) y_lower_colname <- paste(y_lower_colname, y_colname, sep = "_")
 
       y_lower_range <- col_to_values_region(dataset, sheetname, y_lower_colname)
-      error_bars$y$lower <- num_ref(values = dataset[[y_lower_colname]], region = y_lower_range)
+      error_bars$y$ref_lower <- num_ref(values = dataset[[y_lower_colname]], region = y_lower_range)
     }
     if (!is.null(x$error_bars$y$upper)) {
       y_upper_colname <- "Upper error bar"
       if (y_colname != x$y) y_upper_colname <- paste(y_upper_colname, y_colname, sep = "_")
 
       y_upper_range <- col_to_values_region(dataset, sheetname, y_upper_colname)
-      error_bars$y$upper <- num_ref(values = dataset[[y_upper_colname]], region = y_upper_range)
+      error_bars$y$ref_upper <- num_ref(values = dataset[[y_upper_colname]], region = y_upper_range)
     }
 
     ser <- list(
