@@ -43,6 +43,7 @@ assert_line <- function(data_y) {
 #' associated with the chart.
 #' @param asis bool parameter defaulting to FALSE. If TRUE the data will not be
 #' modified.
+#' @param error_y_lower,error_y_upper Column names for values to use in custom error bars.
 #' @export
 #' @family 'Office' chart objects
 #' @seealso [chart_settings()], [chart_ax_x()], [chart_ax_y()],

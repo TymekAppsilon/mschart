@@ -33,6 +33,8 @@
   sprintf("%s (%s-axis %s error value)", name, toupper(axis), sign)
 }
 
+#' @export
+#' @method to_pml ms_error_bars
 to_pml.ms_error_bars <- function(x, axis = c("x", "y")) {
   axis <- match.arg(axis)
   if (is.null(x$ref_lower) && is.null(x$ref_upper)) {
