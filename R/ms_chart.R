@@ -202,22 +202,17 @@ ms_chart <- function(data, x, y, group = NULL, labels = NULL,
     data <- as.data.frame(data, stringsAsFactors = FALSE)
   }
 
-  if (!is.null(group) && !(group %in% names(data))) {
-    stop("column ", shQuote(group), " could not be found in data.", call. = FALSE)
+  for (col in list(group, error_y_lower, error_y_upper)) {
+    if (!is.null(col) && !(col %in% names(data))) {
+      stop("column ", shQuote(col), " could not be found in data.", call. = FALSE)
+    }
   }
+
   if (!is.null(labels)) {
     labs <- labels[!labels %in% names(data)]
     if (!(all(labs))) {
       stop("column(s) ", paste(shQuote(labs), collapse = ", "), " could not be found in data.", call. = FALSE)
     }
-  }
-
-  if (!is.null(error_y_lower) && !(error_y_lower %in% names(data))) {
-    stop("column ", shQuote(error_y_lower), " could not be found in data.", call. = FALSE)
-  }
-
-  if (!is.null(error_y_upper) && !(error_y_upper %in% names(data))) {
-    stop("column ", shQuote(error_y_upper), " could not be found in data.", call. = FALSE)
   }
 
   theme_ <- mschart_theme()
@@ -270,12 +265,15 @@ ms_chart <- function(data, x, y, group = NULL, labels = NULL,
   x <- x[1]
   y <- y[1]
 
+  # Error bars -----
   error_bar_colnames <- list(y = NULL)
   if (!is.null(error_y_lower)) {
+    if (!is.numeric(data[[error_y_lower]])) stop("column ", shQuote(error_y_lower), " should be numeric", call. = FALSE)
     error_bar_colnames$y$lower <- error_y_lower
     data[[.error_bar_colname(error_y_lower, "y", "lower")]] <- data[[y]] - data[[error_y_lower]]
   }
   if (!is.null(error_y_upper)) {
+    if (!is.numeric(data[[error_y_upper]])) stop("column ", shQuote(error_y_upper), " should be numeric", call. = FALSE)
     error_bar_colnames$y$upper <- error_y_upper
     data[[.error_bar_colname(error_y_upper, "y", "upper")]] <- data[[error_y_upper]] - data[[y]]
   }
