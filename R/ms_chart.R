@@ -111,10 +111,19 @@ ms_linechart <- function(
 #' @examples
 #' library(officer)
 #' @example examples/01_barchart.R
-ms_barchart <- function(data, x, y, group = NULL, labels = NULL, asis = FALSE) {
+ms_barchart <- function(
+    data,
+    x,
+    y,
+    group = NULL,
+    labels = NULL,
+    asis = FALSE,
+    error_y_lower = NULL,
+    error_y_upper = NULL) {
   out <- ms_chart(
     data = data, x = x, y = y, group = group, labels = labels,
-    type = "barplot", asis = asis
+    type = "barplot", asis = asis,
+    error_y_lower = error_y_lower, error_y_upper = error_y_upper
   )
   out$options <- barchart_options()
   class(out) <- c("ms_barchart", "ms_chart")
